@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   const templateSelect = document.getElementById("templateSelect");
-  const backgroundList = document.getElementById("backgroundList");
 
   function applyTemplate(key, shouldSave = true) {
     const t = templates[key];
@@ -53,26 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function createBackgroundThumbs() {
-    backgroundList.innerHTML = "";
-
-    Object.keys(templates).forEach(key => {
-      const img = document.createElement("img");
-      img.className = "thumb";
-      img.src = templates[key].background;
-      img.title = templates[key].name;
-
-      img.addEventListener("click", () => {
-        templateSelect.value = key;
-        applyTemplate(key, true);
-      });
-
-      backgroundList.appendChild(img);
-    });
-  }
-
   createTemplateOptions();
-  createBackgroundThumbs();
 
   if (!templates[App.state.template]) {
     App.state.template = Object.keys(templates)[0];
