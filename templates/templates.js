@@ -1,8 +1,8 @@
 window.templates = {
   fantasy: {
     name: "Fantasy",
-    background: "assets/backgrounds/bg1.jpg",
-    frame: "assets/frames/frame1.png",
+    background: "./assets/backgrounds/bg1.jpg",
+    frame: "./assets/frames/frame1.png",
     font: "Cinzel",
     textColor: "#ffffff",
     photoArea: { left: 60, top: 80, width: 580, height: 700 },
@@ -15,8 +15,8 @@ window.templates = {
 
   cyber: {
     name: "Cyber",
-    background: "assets/backgrounds/bg2.jpg",
-    frame: "assets/frames/frame2.png",
+    background: "./assets/backgrounds/bg2.jpg",
+    frame: "./assets/frames/frame2.png",
     font: "Orbitron",
     textColor: "#00ffff",
     photoArea: { left: 70, top: 100, width: 560, height: 680 },
@@ -29,8 +29,8 @@ window.templates = {
 
   simple: {
     name: "Simple",
-    background: "assets/backgrounds/bg3.jpg",
-    frame: "assets/frames/frame3.png",
+    background: "./assets/backgrounds/bg3.jpg",
+    frame: "./assets/frames/frame3.png",
     font: "Noto Sans JP",
     textColor: "#ffffff",
     photoArea: { left: 60, top: 80, width: 580, height: 700 },
