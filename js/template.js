@@ -2,19 +2,45 @@ document.addEventListener("DOMContentLoaded", () => {
   const templateSelect = document.getElementById("templateSelect");
   const backgroundList = document.getElementById("backgroundList");
 
-  createTemplateOptions();
-  createBackgroundThumbs();
+  function applyTemplate(key, shouldSave = true) {
+    const t = templates[key];
+    if (!t) return;
 
-  if (!templates[App.state.template]) {
-    App.state.template = Object.keys(templates)[0];
+    App.state.template = key;
+    App.state.background = t.background || "";
+    App.state.frame = t.frame || "";
+
+    if (t.photoArea) {
+      App.state.photoArea = {
+        ...App.state.photoArea,
+        ...t.photoArea
+      };
+    }
+
+    ["name", "job", "desc"].forEach(textKey => {
+      if (t.font) App.state.texts[textKey].font = t.font;
+      if (t.textColor) App.state.texts[textKey].color = t.textColor;
+
+      if (t.texts && t.texts[textKey]) {
+        App.state.texts[textKey] = {
+          ...App.state.texts[textKey],
+          ...t.texts[textKey]
+        };
+      }
+    });
+
+    App.render();
+
+    if (typeof window.updateEditor === "function") {
+      window.updateEditor();
+    }
+
+    if (shouldSave) {
+      App.saveLocal();
+    }
   }
 
-  templateSelect.value = App.state.template;
-  applyTemplate(App.state.template, false);
-
-  templateSelect.addEventListener("change", () => {
-    applyTemplate(templateSelect.value, true);
-  });
+  window.applyTemplate = applyTemplate;
 
   function createTemplateOptions() {
     templateSelect.innerHTML = "";
@@ -45,46 +71,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  window.applyTemplate = function(key, shouldSave = true) {
-    const t = templates[key];
-    if (!t) return;
+  createTemplateOptions();
+  createBackgroundThumbs();
 
-    App.state.template = key;
-    App.state.background = t.background || "";
-    App.state.frame = t.frame || "";
+  if (!templates[App.state.template]) {
+    App.state.template = Object.keys(templates)[0];
+  }
 
-    if (t.photoArea) {
-      App.state.photoArea = {
-        ...App.state.photoArea,
-        ...t.photoArea
-      };
-    }
+  templateSelect.value = App.state.template;
+  applyTemplate(App.state.template, false);
 
-    ["name", "job", "desc"].forEach(textKey => {
-      if (t.font) {
-        App.state.texts[textKey].font = t.font;
-      }
-
-      if (t.textColor) {
-        App.state.texts[textKey].color = t.textColor;
-      }
-
-      if (t.texts && t.texts[textKey]) {
-        App.state.texts[textKey] = {
-          ...App.state.texts[textKey],
-          ...t.texts[textKey]
-        };
-      }
-    });
-
-    App.render();
-
-    if (typeof window.updateEditor === "function") {
-      window.updateEditor();
-    }
-
-    if (shouldSave) {
-      App.saveLocal();
-    }
-  };
+  templateSelect.addEventListener("change", () => {
+    applyTemplate(templateSelect.value, true);
+  });
 });
