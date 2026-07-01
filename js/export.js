@@ -7,24 +7,38 @@ document.addEventListener("DOMContentLoaded", () => {
   saveJson.addEventListener("click", saveJSON);
   loadJson.addEventListener("change", loadJSON);
 
-  async function savePNG() {
-    const canvas = await html2canvas(App.el.card, {
-      backgroundColor: null,
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      width: 700,
-      height: 1000,
-      windowWidth: document.documentElement.scrollWidth,
-      windowHeight: document.documentElement.scrollHeight
-    });
+async function savePNG() {
 
-    const link = document.createElement("a");
-    link.download = createName("png");
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  }
+  const oldFit =
+    App.el.photo.style.objectFit;
 
+  App.el.photo.style.objectFit =
+    "cover";
+
+  const canvas =
+    await html2canvas(
+      App.el.card,
+      {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true
+      }
+    );
+
+  App.el.photo.style.objectFit =
+    oldFit;
+
+  const link =
+    document.createElement("a");
+
+  link.download = createName("png");
+
+  link.href =
+    canvas.toDataURL("image/png");
+
+  link.click();
+
+}
   function saveJSON() {
     const json = JSON.stringify(App.state, null, 2);
     const blob = new Blob([json], { type: "application/json" });
