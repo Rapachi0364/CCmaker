@@ -112,7 +112,8 @@ renderPhoto() {
     `${100 * p.scale}% auto`;
 
   this.el.photoArea.style.backgroundPosition =
-    `calc(50% + ${p.x}px) calc(50% + ${p.y}px)`;
+    `calc(50% + ${p.x}px)
+     calc(50% + ${p.y}px)`;
 
   this.el.photoArea.style.backgroundRepeat = "no-repeat";
 },
