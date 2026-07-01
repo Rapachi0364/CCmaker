@@ -8,11 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   loadJson.addEventListener("change", loadJSON);
 
 async function savePNG() {
-  const photo = App.el.photo;
-
-  const oldObjectFit = photo.style.objectFit;
-
-  photo.style.objectFit = "cover";
+  App.exportMode = "cover";
+  App.renderPhoto();
 
   await new Promise(resolve => requestAnimationFrame(resolve));
 
@@ -25,7 +22,8 @@ async function savePNG() {
     height: 1000
   });
 
-  photo.style.objectFit = oldObjectFit;
+  App.exportMode = "contain";
+  App.renderPhoto();
 
   const link = document.createElement("a");
   link.download = createName("png");
