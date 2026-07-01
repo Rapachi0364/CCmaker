@@ -19,7 +19,7 @@ window.templates = {
     frame: "assets/frames/frame2.png",
     font: "Orbitron",
     textColor: "#00ffff",
-    photoArea: { left: 35, top: 50, width: 630, height: 900 },
+    photoArea: { left: 35, top: 30, width: 630, height: 800 },
     texts: {
       name: { x: 45, y: 760, size: 64, bold: true },
       job: { x: 50, y: 845, size: 30, bold: false },
