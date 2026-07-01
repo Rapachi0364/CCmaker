@@ -63,10 +63,8 @@ window.App = {
   init() {
     this.el.card = document.getElementById("card");
     this.el.background = document.getElementById("background");
-    this.el.frame = document.getElementById("frame");
-
     this.el.photoArea = document.getElementById("photoArea");
-    this.el.photo = document.getElementById("photo");
+    this.el.frame = document.getElementById("frame");
 
     this.el.nameText = document.getElementById("nameText");
     this.el.jobText = document.getElementById("jobText");
@@ -102,37 +100,28 @@ window.App = {
     this.el.photoArea.style.height = p.height + "px";
   },
 
-renderPhoto() {
-  const p = this.state.photoTransform;
+  renderPhoto() {
+    const p = this.state.photoTransform;
 
-  this.el.photoArea.style.backgroundImage =
-    this.state.photo ? `url("${this.state.photo}")` : "";
+    this.el.photoArea.style.backgroundImage =
+      this.state.photo
+        ? `url("${this.state.photo}")`
+        : "";
 
-  this.el.photoArea.style.backgroundSize =
-    `${100 * p.scale}% auto`;
+    this.el.photoArea.style.backgroundSize =
+      `${100 * p.scale}% auto`;
 
-  this.el.photoArea.style.backgroundPosition =
-    `calc(50% + ${p.x}px)
-     calc(50% + ${p.y}px)`;
+    this.el.photoArea.style.backgroundPosition =
+      `calc(50% + ${p.x}px) calc(50% + ${p.y}px)`;
 
-  this.el.photoArea.style.backgroundRepeat = "no-repeat";
-},
+    this.el.photoArea.style.backgroundRepeat =
+      "no-repeat";
+  },
 
   renderTexts() {
-    this.applyText(
-      this.el.nameText,
-      this.state.texts.name
-    );
-
-    this.applyText(
-      this.el.jobText,
-      this.state.texts.job
-    );
-
-    this.applyText(
-      this.el.descText,
-      this.state.texts.desc
-    );
+    this.applyText(this.el.nameText, this.state.texts.name);
+    this.applyText(this.el.jobText, this.state.texts.job);
+    this.applyText(this.el.descText, this.state.texts.desc);
   },
 
   applyText(el, data) {
