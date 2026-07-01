@@ -2,7 +2,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const templateSelect = document.getElementById("templateSelect");
   const backgroundList = document.getElementById("backgroundList");
 
-  function applyTemplate(key, shouldSave = true) {
+  createTemplateOptions();
+  createBackgroundThumbs();
+
+  if (!templates[App.state.template]) {
+    App.state.template = Object.keys(templates)[0];
+  }
+
+  templateSelect.value = App.state.template;
+  applyTemplate(App.state.template, false);
+
+  templateSelect.addEventListener("change", () => {
+    applyTemplate(templateSelect.value, true);
+  });
+
+  function createTemplateOptions() {
+    templateSelect.innerHTML = "";
+
+    Object.keys(templates).forEach(key => {
+      const option = document.createElement("option");
+      option.value = key;
+      option.textContent = templates[key].name;
+      templateSelect.appendChild(option);
+    });
+  }
+
+  function createBackgroundThumbs() {
+    backgroundList.innerHTML = "";
+
+    Object.keys(templates).forEach(key => {
+      const img = document.createElement("img");
+      img.className = "thumb";
+      img.src = templates[key].background;
+      img.title = templates[key].name;
+
+      img.addEventListener("click", () => {
+        templateSelect.value = key;
+        applyTemplate(key, true);
+      });
+
+      backgroundList.appendChild(img);
+    });
+  }
+
+  window.applyTemplate = function(key, shouldSave = true) {
     const t = templates[key];
     if (!t) return;
 
@@ -43,50 +86,5 @@ document.addEventListener("DOMContentLoaded", () => {
     if (shouldSave) {
       App.saveLocal();
     }
-  }
-
-  window.applyTemplate = applyTemplate;
-
-  function createTemplateOptions() {
-    templateSelect.innerHTML = "";
-
-    Object.keys(templates).forEach(key => {
-      const option = document.createElement("option");
-      option.value = key;
-      option.textContent = templates[key].name;
-      templateSelect.appendChild(option);
-    });
-  }
-
-  function createBackgroundThumbs() {
-    backgroundList.innerHTML = "";
-
-    Object.keys(templates).forEach(key => {
-      const img = document.createElement("img");
-      img.className = "thumb";
-      img.src = templates[key].background;
-      img.title = templates[key].name;
-
-      img.addEventListener("click", () => {
-        templateSelect.value = key;
-        applyTemplate(key, true);
-      });
-
-      backgroundList.appendChild(img);
-    });
-  }
-
-  createTemplateOptions();
-  createBackgroundThumbs();
-
-  if (!templates[App.state.template]) {
-    App.state.template = Object.keys(templates)[0];
-  }
-
-  templateSelect.value = App.state.template;
-  applyTemplate(App.state.template, false);
-
-  templateSelect.addEventListener("change", () => {
-    applyTemplate(templateSelect.value, true);
-  });
+  };
 });
