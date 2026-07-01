@@ -7,33 +7,26 @@ document.addEventListener("DOMContentLoaded", () => {
   saveJson.addEventListener("click", saveJSON);
   loadJson.addEventListener("change", loadJSON);
 
-async function savePNG() {
-  App.exportMode = "cover";
-  App.renderPhoto();
+  async function savePNG() {
+    const canvas = await html2canvas(App.el.card, {
+      backgroundColor: null,
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
 
-  await new Promise(resolve => requestAnimationFrame(resolve));
-
-  const canvas = await html2canvas(App.el.card, {
-    backgroundColor: null,
-    scale: 2,
-    useCORS: true,
-    logging: false,
-    width: 700,
-    height: 1000
-  });
-
-  App.exportMode = "contain";
-  App.renderPhoto();
-
-  const link = document.createElement("a");
-  link.download = createName("png");
-  link.href = canvas.toDataURL("image/png");
-  link.click();
-}
+    const link = document.createElement("a");
+    link.download = createName("png");
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
 
   function saveJSON() {
     const json = JSON.stringify(App.state, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
+    const blob = new Blob([json], {
+      type: "application/json"
+    });
+
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
@@ -46,6 +39,7 @@ async function savePNG() {
 
   function loadJSON(e) {
     const file = e.target.files[0];
+
     if (!file) return;
 
     const reader = new FileReader();
@@ -53,7 +47,11 @@ async function savePNG() {
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result);
-        App.state = App.deepMerge(App.state, data);
+
+        App.state = App.deepMerge
+          ? App.deepMerge(App.state, data)
+          : data;
+
         App.render();
 
         if (typeof updateEditor === "function") {
@@ -62,8 +60,8 @@ async function savePNG() {
 
         App.saveLocal();
       } catch (err) {
-        alert("JSONを読み込めませんでした");
         console.error(err);
+        alert("JSONを読み込めませんでした");
       }
     };
 
@@ -72,6 +70,7 @@ async function savePNG() {
 
   function createName(ext) {
     const d = new Date();
+
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
