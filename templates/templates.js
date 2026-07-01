@@ -5,7 +5,7 @@ window.templates = {
     frame: "assets/frames/frame1.png",
     font: "Cinzel",
     textColor: "#ffffff",
-    photoArea: { left: 60, top: 80, width: 580, height: 700 },
+    photoArea: { left: 0, top: 0, width: 700, height: 1000 },
     texts: {
       name: { x: 40, y: 780, size: 68, bold: true },
       job: { x: 45, y: 865, size: 32, bold: false },

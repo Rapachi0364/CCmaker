@@ -28,11 +28,14 @@
   position: absolute;
   left: 0;
   top: 0;
+
   width: 100%;
-  height: auto;
+  height: 100%;
+
+  object-fit: contain;
+
   cursor: grab;
-  user-select: none;
-  -webkit-user-drag: none;
+
   transform-origin: center center;
 }
 
@@ -86,4 +89,20 @@
     aspect-ratio: 7 / 10;
     height: auto;
   }
+}
+
+#background {
+  z-index: 1;
+}
+
+#photoArea {
+  z-index: 2;
+}
+
+#frame {
+  z-index: 3;
+}
+
+.draggable {
+  z-index: 4;
 }
