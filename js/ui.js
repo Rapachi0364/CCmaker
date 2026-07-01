@@ -1,74 +1,199 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const nameInput = document.getElementById("nameInput");
-  const jobInput = document.getElementById("jobInput");
-  const descInput = document.getElementById("descInput");
 
-  const fontSelect = document.getElementById("fontSelect");
-  const fontSize = document.getElementById("fontSize");
-  const fontColor = document.getElementById("fontColor");
-  const boldCheck = document.getElementById("boldCheck");
+  const photoInput =
+    document.getElementById("photoInput");
 
-  nameInput.value = App.state.texts.name.value;
-  jobInput.value = App.state.texts.job.value;
-  descInput.value = App.state.texts.desc.value;
+  const photoArea =
+    App.el.photoArea;
 
-  nameInput.addEventListener("input", () => {
-    App.state.texts.name.value = nameInput.value || "名前";
-    App.render();
+  /*=========================
+    アップロード
+  =========================*/
+
+  photoInput.addEventListener(
+    "change",
+    loadPhoto
+  );
+
+  function loadPhoto(e) {
+
+    const file =
+      e.target.files[0];
+
+    if (!file) return;
+
+    const reader =
+      new FileReader();
+
+    reader.onload = () => {
+
+      App.state.photo =
+        reader.result;
+
+      App.state.photoTransform = {
+        x: 0,
+        y: 0,
+        scale: 1
+      };
+
+      App.render();
+      App.saveLocal();
+
+    };
+
+    reader.readAsDataURL(file);
+
+  }
+
+  /*=========================
+    ドラッグ
+  =========================*/
+
+  let dragging = false;
+
+  let startX = 0;
+  let startY = 0;
+
+  let baseX = 0;
+  let baseY = 0;
+
+  photoArea.addEventListener(
+    "pointerdown",
+    startDrag
+  );
+
+  function startDrag(e) {
+
+    dragging = true;
+
+    startX = e.clientX;
+    startY = e.clientY;
+
+    baseX =
+      App.state.photoTransform.x;
+
+    baseY =
+      App.state.photoTransform.y;
+
+    photoArea.setPointerCapture(
+      e.pointerId
+    );
+
+  }
+
+  photoArea.addEventListener(
+    "pointermove",
+    dragMove
+  );
+
+  function dragMove(e) {
+
+    if (!dragging) return;
+
+    App.state.photoTransform.x =
+      baseX +
+      (e.clientX - startX);
+
+    App.state.photoTransform.y =
+      baseY +
+      (e.clientY - startY);
+
+    App.renderPhoto();
+
+  }
+
+  photoArea.addEventListener(
+    "pointerup",
+    stopDrag
+  );
+
+  photoArea.addEventListener(
+    "pointercancel",
+    stopDrag
+  );
+
+  function stopDrag(e) {
+
+    if (!dragging) return;
+
+    dragging = false;
+
+    try {
+
+      photoArea.releasePointerCapture(
+        e.pointerId
+      );
+
+    } catch {}
+
     App.saveLocal();
-  });
 
-  jobInput.addEventListener("input", () => {
-    App.state.texts.job.value = jobInput.value || "職業";
-    App.render();
+  }
+
+  /*=========================
+    ズーム
+  =========================*/
+
+  photoArea.addEventListener(
+    "wheel",
+    zoomPhoto,
+    {
+      passive: false
+    }
+  );
+
+  function zoomPhoto(e) {
+
+    e.preventDefault();
+
+    if (e.deltaY < 0) {
+
+      App.state.photoTransform.scale +=
+        0.1;
+
+    } else {
+
+      App.state.photoTransform.scale -=
+        0.1;
+
+    }
+
+    App.state.photoTransform.scale =
+      Math.max(
+        0.1,
+        Math.min(
+          10,
+          App.state.photoTransform.scale
+        )
+      );
+
+    App.renderPhoto();
+
     App.saveLocal();
-  });
 
-  descInput.addEventListener("input", () => {
-    App.state.texts.desc.value = descInput.value || "説明文";
-    App.render();
+  }
+
+  /*=========================
+    ダブルクリック
+  =========================*/
+
+  photoArea.addEventListener(
+    "dblclick",
+    resetPhoto
+  );
+
+  function resetPhoto() {
+
+    App.state.photoTransform = {
+      x: 0,
+      y: 0,
+      scale: 1
+    };
+
+    App.renderPhoto();
+
     App.saveLocal();
-  });
 
-  document.querySelectorAll(".draggable").forEach(el => {
-    el.addEventListener("click", () => {
-      App.selectedKey = el.dataset.key;
-      updateEditor();
-    });
-  });
+  }
 
-  fontSelect.addEventListener("change", () => {
-    App.state.texts[App.selectedKey].font = fontSelect.value;
-    App.render();
-    App.saveLocal();
-  });
-
-  fontSize.addEventListener("input", () => {
-    App.state.texts[App.selectedKey].size = Number(fontSize.value);
-    App.render();
-    App.saveLocal();
-  });
-
-  fontColor.addEventListener("input", () => {
-    App.state.texts[App.selectedKey].color = fontColor.value;
-    App.render();
-    App.saveLocal();
-  });
-
-  boldCheck.addEventListener("change", () => {
-    App.state.texts[App.selectedKey].bold = boldCheck.checked;
-    App.render();
-    App.saveLocal();
-  });
-
-  window.updateEditor = function() {
-    const t = App.state.texts[App.selectedKey];
-
-    fontSelect.value = t.font;
-    fontSize.value = t.size;
-    fontColor.value = t.color;
-    boldCheck.checked = t.bold;
-  };
-
-  updateEditor();
 });

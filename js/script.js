@@ -3,20 +3,25 @@ window.App = {
 
   state: {
     template: "fantasy",
+
     background: "",
     frame: "",
+
     photo: "",
+
     photoTransform: {
       x: 0,
       y: 0,
       scale: 1
     },
+
     photoArea: {
-      left: 60,
-      top: 80,
-      width: 580,
-      height: 700
+      left: 0,
+      top: 0,
+      width: 700,
+      height: 1000
     },
+
     texts: {
       name: {
         value: "名前",
@@ -28,6 +33,7 @@ window.App = {
         bold: true,
         shadow: true
       },
+
       job: {
         value: "職業",
         x: 45,
@@ -38,6 +44,7 @@ window.App = {
         bold: false,
         shadow: true
       },
+
       desc: {
         value: "説明文",
         x: 45,
@@ -57,6 +64,7 @@ window.App = {
     this.el.card = document.getElementById("card");
     this.el.background = document.getElementById("background");
     this.el.frame = document.getElementById("frame");
+
     this.el.photoArea = document.getElementById("photoArea");
     this.el.photo = document.getElementById("photo");
 
@@ -77,13 +85,17 @@ window.App = {
 
   renderBackground() {
     this.el.background.style.backgroundImage =
-      this.state.background ? `url("${this.state.background}")` : "";
+      this.state.background
+        ? `url("${this.state.background}")`
+        : "";
 
-    this.el.frame.src = this.state.frame || "";
+    this.el.frame.src =
+      this.state.frame || "";
   },
 
   renderPhotoArea() {
     const p = this.state.photoArea;
+
     this.el.photoArea.style.left = p.left + "px";
     this.el.photoArea.style.top = p.top + "px";
     this.el.photoArea.style.width = p.width + "px";
@@ -91,62 +103,78 @@ window.App = {
   },
 
 renderPhoto() {
-  const photo = this.el.photo;
-  const area = this.el.photoArea;
-
-  if (this.state.photo && photo.src !== this.state.photo) {
-    photo.src = this.state.photo;
-  }
-
   const p = this.state.photoTransform;
 
-  photo.style.left = p.x + "px";
-  photo.style.top = p.y + "px";
-  photo.style.transform = `scale(${p.scale})`;
+  this.el.photoArea.style.backgroundImage =
+    this.state.photo ? `url("${this.state.photo}")` : "";
 
-  if (this.exportMode === "cover") {
-    photo.style.width = "100%";
-    photo.style.height = "100%";
-    photo.style.objectFit = "cover";
-  } else {
-    photo.style.width = "100%";
-    photo.style.height = "100%";
-    photo.style.objectFit = "contain";
-  }
+  this.el.photoArea.style.backgroundSize =
+    `${100 * p.scale}% auto`;
+
+  this.el.photoArea.style.backgroundPosition =
+    `calc(50% + ${p.x}px) calc(50% + ${p.y}px)`;
+
+  this.el.photoArea.style.backgroundRepeat = "no-repeat";
 },
 
   renderTexts() {
-    this.applyText(this.el.nameText, this.state.texts.name);
-    this.applyText(this.el.jobText, this.state.texts.job);
-    this.applyText(this.el.descText, this.state.texts.desc);
+    this.applyText(
+      this.el.nameText,
+      this.state.texts.name
+    );
+
+    this.applyText(
+      this.el.jobText,
+      this.state.texts.job
+    );
+
+    this.applyText(
+      this.el.descText,
+      this.state.texts.desc
+    );
   },
 
   applyText(el, data) {
     el.textContent = data.value;
+
     el.style.left = data.x + "px";
     el.style.top = data.y + "px";
+
     el.style.fontSize = data.size + "px";
     el.style.color = data.color;
     el.style.fontFamily = data.font;
-    el.style.fontWeight = data.bold ? "bold" : "normal";
-    el.style.textShadow = data.shadow
-      ? "3px 3px 8px rgba(0,0,0,.5)"
-      : "none";
+
+    el.style.fontWeight =
+      data.bold ? "bold" : "normal";
+
+    el.style.textShadow =
+      data.shadow
+        ? "3px 3px 8px rgba(0,0,0,.5)"
+        : "none";
   },
 
   saveLocal() {
-    localStorage.setItem("magCardState", JSON.stringify(this.state));
+    localStorage.setItem(
+      "magCardState",
+      JSON.stringify(this.state)
+    );
   },
 
   loadLocal() {
-    const data = localStorage.getItem("magCardState");
-    if (!data) return;
+    const saved =
+      localStorage.getItem("magCardState");
+
+    if (!saved) return;
 
     try {
-      const saved = JSON.parse(data);
-      this.state = this.deepMerge(this.state, saved);
-    } catch (e) {
-      console.error(e);
+      const data = JSON.parse(saved);
+
+      this.state = this.deepMerge(
+        this.state,
+        data
+      );
+    } catch (err) {
+      console.error(err);
     }
   },
 
@@ -157,11 +185,15 @@ renderPhoto() {
         typeof source[key] === "object" &&
         !Array.isArray(source[key])
       ) {
-        target[key] = this.deepMerge(target[key] || {}, source[key]);
+        target[key] = this.deepMerge(
+          target[key] || {},
+          source[key]
+        );
       } else {
         target[key] = source[key];
       }
     }
+
     return target;
   }
 };
