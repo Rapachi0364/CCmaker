@@ -90,7 +90,7 @@ window.App = {
     this.el.photoArea.style.height = p.height + "px";
   },
 
-  renderPhoto() {
+renderPhoto() {
   const photo = this.el.photo;
   const area = this.el.photoArea;
 
@@ -98,46 +98,22 @@ window.App = {
     photo.src = this.state.photo;
   }
 
-  if (!photo.naturalWidth || !photo.naturalHeight) {
-    return;
-  }
-
-  const areaW = area.offsetWidth;
-  const areaH = area.offsetHeight;
-
-  const imgW = photo.naturalWidth;
-  const imgH = photo.naturalHeight;
-
-  const fitMode = this.exportMode === "cover" ? "cover" : "contain";
-
-  const ratio =
-    fitMode === "cover"
-      ? Math.max(areaW / imgW, areaH / imgH)
-      : Math.min(areaW / imgW, areaH / imgH);
-
-  const baseW = imgW * ratio;
-  const baseH = imgH * ratio;
-
   const p = this.state.photoTransform;
 
-  photo.style.width = baseW + "px";
-  photo.style.height = baseH + "px";
+  photo.style.left = p.x + "px";
+  photo.style.top = p.y + "px";
+  photo.style.transform = `scale(${p.scale})`;
 
-  photo.style.left =
-    (areaW - baseW) / 2 + p.x + "px";
-
-  photo.style.top =
-    (areaH - baseH) / 2 + p.y + "px";
-
-  photo.style.transform =
-    `scale(${p.scale})`;
-}
-
-    const p = this.state.photoTransform;
-    this.el.photo.style.left = p.x + "px";
-    this.el.photo.style.top = p.y + "px";
-    this.el.photo.style.transform = `scale(${p.scale})`;
-  },
+  if (this.exportMode === "cover") {
+    photo.style.width = "100%";
+    photo.style.height = "100%";
+    photo.style.objectFit = "cover";
+  } else {
+    photo.style.width = "100%";
+    photo.style.height = "100%";
+    photo.style.objectFit = "contain";
+  }
+},
 
   renderTexts() {
     this.applyText(this.el.nameText, this.state.texts.name);
