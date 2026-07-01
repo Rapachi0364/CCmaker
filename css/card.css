@@ -17,11 +17,12 @@
 
 #photoArea {
   position: absolute;
-  left: 60px;
-  top: 80px;
-  width: 580px;
-  height: 700px;
+  left: 0;
+  top: 0;
+  width: 700px;
+  height: 1000px;
   overflow: hidden;
+  z-index: 2;
 }
 
 #photo {
@@ -40,6 +41,7 @@
 
   transform-origin: center center;
 }
+
 #frame {
   position: absolute;
   inset: 0;
