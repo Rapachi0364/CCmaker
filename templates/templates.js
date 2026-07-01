@@ -19,7 +19,7 @@ window.templates = {
     frame: "assets/frames/frame2.png",
     font: "Orbitron",
     textColor: "#00ffff",
-    photoArea: { left: 70, top: 100, width: 560, height: 680 },
+    photoArea: { left: 35, top: 50, width: 630, height: 900 },
     texts: {
       name: { x: 45, y: 760, size: 64, bold: true },
       job: { x: 50, y: 845, size: 30, bold: false },
@@ -33,7 +33,7 @@ window.templates = {
     frame: "assets/frames/frame3.png",
     font: "Noto Sans JP",
     textColor: "#ffffff",
-    photoArea: { left: 60, top: 80, width: 580, height: 700 },
+    photoArea: { left: 0, top: 0, width: 700, height: 1000 },
     texts: {
       name: { x: 40, y: 780, size: 60, bold: true },
       job: { x: 45, y: 850, size: 30, bold: false },
