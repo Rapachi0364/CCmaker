@@ -1,90 +1,43 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const templateSelect = document.getElementById("templateSelect");
-  const backgroundList = document.getElementById("backgroundList");
-
-  createTemplateOptions();
-  createBackgroundThumbs();
-
-  if (!templates[App.state.template]) {
-    App.state.template = Object.keys(templates)[0];
-  }
-
-  templateSelect.value = App.state.template;
-  applyTemplate(App.state.template, false);
-
-  templateSelect.addEventListener("change", () => {
-    applyTemplate(templateSelect.value, true);
-  });
-
-  function createTemplateOptions() {
-    templateSelect.innerHTML = "";
-
-    Object.keys(templates).forEach(key => {
-      const option = document.createElement("option");
-      option.value = key;
-      option.textContent = templates[key].name;
-      templateSelect.appendChild(option);
-    });
-  }
-
-  function createBackgroundThumbs() {
-    backgroundList.innerHTML = "";
-
-    Object.keys(templates).forEach(key => {
-      const img = document.createElement("img");
-      img.className = "thumb";
-      img.src = templates[key].background;
-      img.title = templates[key].name;
-
-      img.addEventListener("click", () => {
-        templateSelect.value = key;
-        applyTemplate(key, true);
-      });
-
-      backgroundList.appendChild(img);
-    });
-  }
-
-  window.applyTemplate = function(key, shouldSave = true) {
-    const t = templates[key];
-    if (!t) return;
-
-    App.state.template = key;
-    App.state.background = t.background || "";
-    App.state.frame = t.frame || "";
-
-    if (t.photoArea) {
-      App.state.photoArea = {
-        ...App.state.photoArea,
-        ...t.photoArea
-      };
+window.templates = {
+  fantasy: {
+    name: "Fantasy",
+    background: "assets/backgrounds/bg1.jpg",
+    frame: "assets/frames/frame1.png",
+    font: "Cinzel",
+    textColor: "#ffffff",
+    photoArea: { left: 60, top: 80, width: 580, height: 700 },
+    texts: {
+      name: { x: 40, y: 780, size: 68, bold: true },
+      job: { x: 45, y: 865, size: 32, bold: false },
+      desc: { x: 45, y: 915, size: 22, bold: false }
     }
+  },
 
-    ["name", "job", "desc"].forEach(textKey => {
-      if (t.font) {
-        App.state.texts[textKey].font = t.font;
-      }
-
-      if (t.textColor) {
-        App.state.texts[textKey].color = t.textColor;
-      }
-
-      if (t.texts && t.texts[textKey]) {
-        App.state.texts[textKey] = {
-          ...App.state.texts[textKey],
-          ...t.texts[textKey]
-        };
-      }
-    });
-
-    App.render();
-
-    if (typeof window.updateEditor === "function") {
-      window.updateEditor();
+  cyber: {
+    name: "Cyber",
+    background: "assets/backgrounds/bg2.jpg",
+    frame: "assets/frames/frame2.png",
+    font: "Orbitron",
+    textColor: "#00ffff",
+    photoArea: { left: 70, top: 100, width: 560, height: 680 },
+    texts: {
+      name: { x: 45, y: 760, size: 64, bold: true },
+      job: { x: 50, y: 845, size: 30, bold: false },
+      desc: { x: 50, y: 900, size: 22, bold: false }
     }
+  },
 
-    if (shouldSave) {
-      App.saveLocal();
+  simple: {
+    name: "Simple",
+    background: "assets/backgrounds/bg3.jpg",
+    frame: "assets/frames/frame3.png",
+    font: "Noto Sans JP",
+    textColor: "#ffffff",
+    photoArea: { left: 60, top: 80, width: 580, height: 700 },
+    texts: {
+      name: { x: 40, y: 780, size: 60, bold: true },
+      job: { x: 45, y: 850, size: 30, bold: false },
+      desc: { x: 45, y: 900, size: 22, bold: false }
     }
-  };
-});
+  }
+};
