@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Card Maker</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Cinzel:wght@400..900&family=Orbitron:wght@400..900&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/panel.css">
+  <link rel="stylesheet" href="css/card.css">
+</head>
+
+<body>
+<div class="container">
+
+  <aside class="panel">
+    <h2>カード編集</h2>
+
+    <label>名前</label>
+    <input id="nameInput" type="text" placeholder="名前">
+
+    <label>職業</label>
+    <input id="jobInput" type="text" placeholder="職業">
+
+    <label>説明</label>
+    <textarea id="descInput" placeholder="説明文"></textarea>
+
+    <hr>
+
+    <label>写真</label>
+    <input id="photoInput" type="file" accept="image/*">
+
+    <hr>
+
+    <label>テンプレート</label>
+    <select id="templateSelect"></select>
+
+    <div id="backgroundList"></div>
+
+    <hr>
+
+    <label>フォント</label>
+    <select id="fontSelect">
+      <option value="Noto Sans JP">Noto Sans JP</option>
+      <option value="Cinzel">Cinzel</option>
+      <option value="Orbitron">Orbitron</option>
+      <option value="Bebas Neue">Bebas Neue</option>
+      <option value="serif">serif</option>
+      <option value="sans-serif">sans-serif</option>
+    </select>
+
+    <label>文字サイズ</label>
+    <input id="fontSize" type="range" min="12" max="120" value="60">
+
+    <label>文字色</label>
+    <input id="fontColor" type="color" value="#ffffff">
+
+    <label class="check">
+      <input id="boldCheck" type="checkbox">
+      太字
+    </label>
+
+    <hr>
+
+    <button id="saveButton">PNG保存</button>
+    <button id="saveJson">JSON保存</button>
+
+    <label>JSON読込</label>
+    <input id="loadJson" type="file" accept=".json">
+  </aside>
+
+  <main class="preview">
+    <div id="card">
+      <div id="background"></div>
+
+      <div id="photoArea">
+        <img id="photo" alt="">
+      </div>
+
+      <img id="frame" alt="">
+
+      <div id="nameText" class="draggable" data-key="name">名前</div>
+      <div id="jobText" class="draggable" data-key="job">職業</div>
+      <div id="descText" class="draggable" data-key="desc">説明文</div>
+    </div>
+  </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script src="templates/templates.js"></script>
+<script src="js/script.js"></script>
+<script src="js/template.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/upload.js"></script>
+<script src="js/drag.js"></script>
+<script src="js/export.js"></script>
+</body>
+</html>
