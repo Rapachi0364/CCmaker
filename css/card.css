@@ -35,10 +35,11 @@
   object-fit: contain;
 
   cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
 
   transform-origin: center center;
 }
-
 #frame {
   position: absolute;
   inset: 0;
