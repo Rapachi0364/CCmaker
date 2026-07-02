@@ -8,17 +8,77 @@ document.addEventListener("DOMContentLoaded", () => {
   loadJson.addEventListener("change", loadJSON);
 
   async function savePNG() {
-    const canvas = await html2canvas(App.el.card, {
-      backgroundColor: null,
-      scale: 2,
-      useCORS: true,
-      logging: false
-    });
+    try {
+      if (document.fonts) {
+        await document.fonts.ready;
+      }
 
-    const link = document.createElement("a");
-    link.download = createName("png");
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+      const clone = App.el.card.cloneNode(true);
+
+      clone.style.position = "fixed";
+      clone.style.left = "-9999px";
+      clone.style.top = "0";
+      clone.style.width = "700px";
+      clone.style.height = "1000px";
+
+      document.body.appendChild(clone);
+
+      const clonePhotoArea = clone.querySelector("#photoArea");
+
+      clonePhotoArea.style.backgroundImage = "none";
+
+      if (App.state.photo) {
+        const img = await loadImage(App.state.photo);
+
+        const area = App.state.photoArea;
+        const p = App.state.photoTransform;
+
+        const ratio = Math.min(
+          area.width / img.naturalWidth,
+          area.height / img.naturalHeight
+        );
+
+        const w = img.naturalWidth * ratio * p.scale;
+        const h = img.naturalHeight * ratio * p.scale;
+
+        img.style.position = "absolute";
+        img.style.width = w + "px";
+        img.style.height = h + "px";
+        img.style.left = (area.width - w) / 2 + p.x + "px";
+        img.style.top = (area.height - h) / 2 + p.y + "px";
+        img.style.maxWidth = "none";
+
+        clonePhotoArea.appendChild(img);
+      }
+
+      const canvas = await html2canvas(clone, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false
+      });
+
+      document.body.removeChild(clone);
+
+      const link = document.createElement("a");
+      link.download = createName("png");
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+    } catch (err) {
+      console.error(err);
+      alert("PNG保存に失敗しました");
+    }
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
   }
 
   function saveJSON() {
@@ -48,10 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const data = JSON.parse(reader.result);
 
-        App.state = App.deepMerge
-          ? App.deepMerge(App.state, data)
-          : data;
-
+        App.state = App.deepMerge(App.state, data);
         App.render();
 
         if (typeof updateEditor === "function") {
@@ -59,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         App.saveLocal();
+
       } catch (err) {
         console.error(err);
         alert("JSONを読み込めませんでした");
