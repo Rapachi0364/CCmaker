@@ -16,9 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     }
 
-    ["name", "job", "desc"].forEach(textKey => {
-      if (t.font) App.state.texts[textKey].font = t.font;
-      if (t.textColor) App.state.texts[textKey].color = t.textColor;
+    ["name", "job", "subjob", "desc"].forEach(textKey => {
+      if (t.font) {
+        App.state.texts[textKey].font = t.font;
+      }
+
+      if (t.textColor) {
+        App.state.texts[textKey].color = t.textColor;
+      }
 
       if (t.texts && t.texts[textKey]) {
         App.state.texts[textKey] = {

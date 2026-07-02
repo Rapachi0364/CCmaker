@@ -7,9 +7,10 @@ window.templates = {
     textColor: "#ffffff",
     photoArea: { left: 0, top: 0, width: 700, height: 1000 },
     texts: {
-      name: { x: 40, y: 780, size: 68, bold: true },
-      job: { x: 45, y: 865, size: 32, bold: false },
-      desc: { x: 45, y: 915, size: 22, bold: false }
+      name: { x: 40, y: 700, size: 68, bold: true },
+      job: { x: 45, y: 820, size: 32, bold: false },
+      subjob: { x: 45, y: 860, size: 18, bold: false },
+      desc: { x: 45, y: 950, size: 22, bold: false }
     }
   },
 
@@ -21,9 +22,10 @@ window.templates = {
     textColor: "#00ffff",
     photoArea: { left: 35, top: 30, width: 630, height: 800 },
     texts: {
-      name: { x: 45, y: 760, size: 64, bold: true },
-      job: { x: 50, y: 845, size: 30, bold: false },
-      desc: { x: 50, y: 900, size: 22, bold: false }
+      name: { x: 40, y: 700, size: 68, bold: true },
+      job: { x: 45, y: 820, size: 32, bold: false },
+      subjob: { x: 45, y: 860, size: 18, bold: false },
+      desc: { x: 45, y: 950, size: 22, bold: false }
     }
   },
 
@@ -35,9 +37,10 @@ window.templates = {
     textColor: "#ffffff",
     photoArea: { left: 0, top: 0, width: 700, height: 1000 },
     texts: {
-      name: { x: 40, y: 780, size: 60, bold: true },
-      job: { x: 45, y: 850, size: 30, bold: false },
-      desc: { x: 45, y: 900, size: 22, bold: false }
+      name: { x: 40, y: 700, size: 68, bold: true },
+      job: { x: 45, y: 820, size: 32, bold: false },
+      subjob: { x: 45, y: 860, size: 18, bold: false },
+      desc: { x: 45, y: 950, size: 22, bold: false }
     }
   }
 };

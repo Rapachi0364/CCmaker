@@ -23,38 +23,49 @@ window.App = {
     },
 
     texts: {
-      name: {
-        value: "名前",
-        x: 40,
-        y: 780,
-        size: 68,
-        color: "#ffffff",
-        font: "Noto Sans JP",
-        bold: true,
-        shadow: true
-      },
+name: {
+  value: "名前",
+  x: 40,
+  y: 740,
+  size: 68,
+  color: "#ffffff",
+  font: "Noto Sans JP",
+  bold: true,
+  shadow: true
+},
 
-      job: {
-        value: "職業",
-        x: 45,
-        y: 865,
-        size: 32,
-        color: "#ffffff",
-        font: "Noto Sans JP",
-        bold: false,
-        shadow: true
-      },
+job: {
+  value: "メインジョブ",
+  x: 45,
+  y: 820,
+  size: 32,
+  color: "#ffffff",
+  font: "Noto Sans JP",
+  bold: false,
+  shadow: true
+},
 
-      desc: {
-        value: "説明文",
-        x: 45,
-        y: 915,
-        size: 22,
-        color: "#ffffff",
-        font: "Noto Sans JP",
-        bold: false,
-        shadow: true
-      }
+subjob: {
+  value: "サブジョブ",
+  x: 45,
+  y: 860,
+  size: 16,
+  color: "#ffffff",
+  font: "Noto Sans JP",
+  bold: false,
+  shadow: true
+},
+
+desc: {
+  value: "説明文",
+  x: 45,
+  y: 950,
+  size: 22,
+  color: "#ffffff",
+  font: "Noto Sans JP",
+  bold: false,
+  shadow: true
+}
     }
   },
 
@@ -68,6 +79,7 @@ window.App = {
 
     this.el.nameText = document.getElementById("nameText");
     this.el.jobText = document.getElementById("jobText");
+    this.el.subjobText = document.getElementById("subjobText");
     this.el.descText = document.getElementById("descText");
 
     this.loadLocal();
@@ -118,11 +130,12 @@ window.App = {
       "no-repeat";
   },
 
-  renderTexts() {
-    this.applyText(this.el.nameText, this.state.texts.name);
-    this.applyText(this.el.jobText, this.state.texts.job);
-    this.applyText(this.el.descText, this.state.texts.desc);
-  },
+renderTexts() {
+  this.applyText(this.el.nameText, this.state.texts.name);
+  this.applyText(this.el.jobText, this.state.texts.job);
+  this.applyText(this.el.subjobText, this.state.texts.subjob);
+  this.applyText(this.el.descText, this.state.texts.desc);
+},
 
   applyText(el, data) {
     el.textContent = data.value;

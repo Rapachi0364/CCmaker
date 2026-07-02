@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   const nameInput = document.getElementById("nameInput");
-  const jobInput = document.getElementById("jobInput");
   const descInput = document.getElementById("descInput");
 
   const fontSelect = document.getElementById("fontSelect");
@@ -9,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const boldCheck = document.getElementById("boldCheck");
 
   nameInput.value = App.state.texts.name.value;
-  jobInput.value = App.state.texts.job.value;
   descInput.value = App.state.texts.desc.value;
 
   nameInput.addEventListener("input", () => {
@@ -18,16 +16,93 @@ document.addEventListener("DOMContentLoaded", () => {
     App.saveLocal();
   });
 
-  jobInput.addEventListener("input", () => {
-    App.state.texts.job.value = jobInput.value || "職業";
-    App.render();
-    App.saveLocal();
-  });
-
   descInput.addEventListener("input", () => {
     App.state.texts.desc.value = descInput.value || "説明文";
     App.render();
     App.saveLocal();
+  });
+
+  document.querySelectorAll('input[name="mainJob"]').forEach(input => {
+    if (input.value === App.state.texts.job.value) {
+      input.checked = true;
+    }
+
+    input.addEventListener("change", () => {
+      App.state.texts.job.value = input.value || "メインジョブ";
+      App.render();
+      App.saveLocal();
+    });
+  });
+
+  const jobCategoryMap = {
+    ナイト: "ファイター",
+    戦士: "ファイター",
+    暗黒騎士: "ファイター",
+    ガンブレイカー: "ファイター",
+
+    モンク: "近接物理DPS",
+    竜騎士: "近接物理DPS",
+    忍者: "近接物理DPS",
+    侍: "近接物理DPS",
+    リーパー: "近接物理DPS",
+    ヴァイパー: "近接物理DPS",
+
+    吟遊詩人: "遠隔物理DPS",
+    機工士: "遠隔物理DPS",
+    踊り子: "遠隔物理DPS",
+
+    黒魔道士: "遠隔魔法DPS",
+    召喚士: "遠隔魔法DPS",
+    赤魔道士: "遠隔魔法DPS",
+    ピクトマンサー: "遠隔魔法DPS",
+
+    白魔道士: "ヒーラー",
+    学者: "ヒーラー",
+    占星術師: "ヒーラー",
+    賢者: "ヒーラー"
+  };
+
+  const categoryOrder = [
+    "ファイター",
+    "近接物理DPS",
+    "遠隔物理DPS",
+    "遠隔魔法DPS",
+    "ヒーラー"
+  ];
+
+  function updateSubJobs() {
+    const selectedJobs = [
+      ...document.querySelectorAll(".sub-job-buttons input:checked")
+    ].map(input => input.value);
+
+    const grouped = {};
+
+    categoryOrder.forEach(category => {
+      grouped[category] = [];
+    });
+
+    selectedJobs.forEach(job => {
+      const category = jobCategoryMap[job];
+
+      if (category) {
+        grouped[category].push(job);
+      }
+    });
+
+    const rows = categoryOrder
+      .map(category => grouped[category])
+      .filter(jobs => jobs.length > 0)
+      .map(jobs => jobs.join("・"));
+
+    App.state.texts.subjob.value =
+      rows.length ? rows.join("\n") : "サブジョブ";
+
+    App.render();
+    App.saveLocal();
+  }
+
+  document.querySelectorAll(".sub-job-buttons input").forEach(input => {
+    input.addEventListener("change", updateSubJobs);
   });
 
   document.querySelectorAll(".draggable").forEach(el => {

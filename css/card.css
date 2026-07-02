@@ -82,10 +82,16 @@
   font-size: 32px;
 }
 
+#subjobText {
+  left: 45px;
+  top: 905px;
+  font-size: 22px;
+}
+
 /* 説明 */
 #descText {
   left: 45px;
-  top: 915px;
+  top: 970px;
   width: 610px;
   font-size: 22px;
   line-height: 1.5;
