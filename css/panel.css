@@ -133,6 +133,23 @@
   border-color: #3b82f6;
 }
 
+.notice-box {
+  margin: 12px 0 18px;
+  padding: 12px;
+  border: 1px solid #f0c36d;
+  border-radius: 8px;
+  background: #fff8e5;
+  color: #5c4200;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.notice-box strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+
 @media (max-width: 900px) {
   .panel {
     width: 100%;
