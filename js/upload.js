@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const photoInput =
     document.getElementById("photoInput");
 
+  const backgroundInput =
+    document.getElementById("backgroundInput");
+
   const photoArea =
     App.el.photoArea;
 
@@ -14,6 +17,37 @@ document.addEventListener("DOMContentLoaded", () => {
     "change",
     loadPhoto
   );
+
+  if (backgroundInput) {
+    backgroundInput.addEventListener(
+      "change",
+      loadBackground
+    );
+  }
+
+  function loadBackground(e) {
+
+    const file =
+      e.target.files[0];
+
+    if (!file) return;
+
+    const reader =
+      new FileReader();
+
+    reader.onload = () => {
+
+      App.state.background =
+        reader.result;
+
+      App.render();
+      App.saveLocal();
+
+    };
+
+    reader.readAsDataURL(file);
+
+  }
 
   function loadPhoto(e) {
 
@@ -50,6 +84,9 @@ document.addEventListener("DOMContentLoaded", () => {
   =========================*/
 
   let dragging = false;
+  const activePointers = new Map();
+  let pinchStartDistance = 0;
+  let pinchBaseScale = 1;
 
   let startX = 0;
   let startY = 0;
@@ -63,6 +100,15 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   function startDrag(e) {
+
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (activePointers.size === 2) {
+      dragging = false;
+      pinchStartDistance = getPointerDistance();
+      pinchBaseScale = App.state.photoTransform.scale;
+      return;
+    }
 
     dragging = true;
 
@@ -88,15 +134,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function dragMove(e) {
 
+    if (!activePointers.has(e.pointerId)) return;
+
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (activePointers.size === 2) {
+      const distance = getPointerDistance();
+      if (pinchStartDistance > 0) {
+        App.state.photoTransform.scale = clampScale(
+          pinchBaseScale * (distance / pinchStartDistance)
+        );
+        App.renderPhoto();
+      }
+      return;
+    }
+
     if (!dragging) return;
 
-    App.state.photoTransform.x =
-      baseX +
-      (e.clientX - startX);
+    const delta = App.getPointerDelta(e, startX, startY);
 
-    App.state.photoTransform.y =
-      baseY +
-      (e.clientY - startY);
+    App.state.photoTransform.x = baseX + delta.x;
+    App.state.photoTransform.y = baseY + delta.y;
 
     App.renderPhoto();
 
@@ -113,6 +171,13 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   function stopDrag(e) {
+
+    activePointers.delete(e.pointerId);
+
+    if (!dragging && activePointers.size === 0) {
+      App.saveLocal();
+      return;
+    }
 
     if (!dragging) return;
 
@@ -158,14 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    App.state.photoTransform.scale =
-      Math.max(
-        0.1,
-        Math.min(
-          10,
-          App.state.photoTransform.scale
-        )
-      );
+    App.state.photoTransform.scale = clampScale(
+      App.state.photoTransform.scale
+    );
 
     App.renderPhoto();
 
@@ -181,6 +241,20 @@ document.addEventListener("DOMContentLoaded", () => {
     "dblclick",
     resetPhoto
   );
+
+  function getPointerDistance() {
+    const points = [...activePointers.values()];
+    if (points.length < 2) return 0;
+
+    return Math.hypot(
+      points[0].x - points[1].x,
+      points[0].y - points[1].y
+    );
+  }
+
+  function clampScale(scale) {
+    return Math.max(0.1, Math.min(10, scale));
+  }
 
   function resetPhoto() {
 

@@ -4,17 +4,28 @@
   box-sizing: border-box;
 }
 
+:root {
+  --card-width: 700px;
+  --card-height: 1000px;
+  --card-scale: 1;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: "Noto Sans JP", sans-serif;
   background: #e8e8e8;
   color: #333;
+  overscroll-behavior: none;
 }
 
 .container {
   display: grid;
-  grid-template-columns: 340px 1fr;
-  width: 100vw;
-  min-height: 100vh;
+  grid-template-columns: 340px minmax(0, 1fr);
+  width: 100%;
+  min-height: 100svh;
 }
 
 .panel {
@@ -31,8 +42,15 @@ body {
   padding: 30px;
 }
 
-#card {
+.card-shell {
+  width: calc(var(--card-width) * var(--card-scale));
+  height: calc(var(--card-height) * var(--card-scale));
   flex-shrink: 0;
+}
+
+#card {
+  transform: scale(var(--card-scale));
+  transform-origin: top left;
 }
 
 button,
@@ -40,11 +58,13 @@ input,
 textarea,
 select {
   font-family: inherit;
+  font-size: 16px;
 }
 
 @media (max-width: 900px) {
   .container {
-    display: block;
+    display: flex;
+    flex-direction: column-reverse;
   }
 
   .panel {
@@ -52,7 +72,12 @@ select {
   }
 
   .preview {
-    padding: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 12px;
+    background: #dcdcdc;
     justify-content: center;
+    overflow: hidden;
   }
 }

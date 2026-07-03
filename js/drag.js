@@ -31,8 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
     el.addEventListener("pointermove", e => {
       if (!target) return;
 
-      App.state.texts[key].x = baseX + (e.clientX - startX);
-      App.state.texts[key].y = baseY + (e.clientY - startY);
+      const delta = App.getPointerDelta(e, startX, startY);
+
+      App.state.texts[key].x = baseX + delta.x;
+      App.state.texts[key].y = baseY + delta.y;
 
       App.renderTexts();
     });
