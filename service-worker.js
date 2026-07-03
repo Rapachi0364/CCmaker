@@ -1,4 +1,4 @@
-const CACHE_NAME = "ccmaker-v16-world";
+const CACHE_NAME = "ccmaker-v21-background-drag";
 
 const APP_FILES = [
   "./",
@@ -12,6 +12,7 @@ const APP_FILES = [
   "./js/template.js",
   "./js/ui.js",
   "./js/upload.js",
+  "./js/background-drag.js",
   "./js/drag.js",
   "./js/export.js",
   "./templates/templates.js",

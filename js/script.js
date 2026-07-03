@@ -9,6 +9,12 @@ window.App = {
     frame: "",
     frameEnabled: true,
 
+    backgroundEditMode: false,
+    backgroundTransform: {
+      x: 0,
+      y: 0
+    },
+
     photo: "",
 
     photoTransform: {
@@ -132,10 +138,20 @@ copyright: {
   },
 
   renderBackground() {
+    const t = this.state.backgroundTransform || { x: 0, y: 0 };
+
     this.el.background.style.backgroundImage =
       this.state.background
         ? `url("${this.state.background}")`
         : "";
+
+    this.el.background.style.backgroundPosition =
+      `calc(50% + ${t.x}px) calc(50% + ${t.y}px)`;
+
+    document.body.classList.toggle(
+      "bg-editing",
+      !!this.state.backgroundEditMode
+    );
 
     this.el.frame.src =
       this.state.frameEnabled ? (this.state.frame || "") : "";

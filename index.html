@@ -215,6 +215,12 @@
     <label>背景画像</label>
     <input id="backgroundInput" type="file" accept="image/*">
 
+    <label class="check bg-edit-check">
+      <input id="backgroundEditMode" type="checkbox">
+      背景調整モード
+    </label>
+    <p class="hint-text">ONの間は背景だけドラッグできます。OFFに戻すと通常編集になります。</p>
+
     <hr>
 
     <label>テンプレート</label>
@@ -297,6 +303,7 @@
 <script src="js/template.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/upload.js"></script>
+<script src="js/background-drag.js"></script>
 <script src="js/drag.js"></script>
 <script src="js/export.js"></script>
 
