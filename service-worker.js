@@ -1,4 +1,4 @@
-const CACHE_NAME = "ccmaker-v21-background-drag";
+const CACHE_NAME = "ccmaker-v23-storage-fixed";
 
 const APP_FILES = [
   "./",

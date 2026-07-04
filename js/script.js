@@ -227,11 +227,30 @@ renderTexts() {
     };
   },
 
+  // localStorageは容量が小さいため、アップロード画像は自動保存しない。
+  // 写真・背景画像を含めた完全保存は「JSON保存」で行う。
+  getLightStateForLocalSave() {
+    return {
+      ...this.state,
+      photo: "",
+      background: ""
+    };
+  },
+
   saveLocal() {
-    localStorage.setItem(
-      "magCardState",
-      JSON.stringify(this.state)
-    );
+    try {
+      const saveData = this.getLightStateForLocalSave();
+
+      // 旧版で保存された巨大なBase64画像を消してから軽量保存する。
+      localStorage.removeItem("magCardState");
+      localStorage.setItem(
+        "magCardState",
+        JSON.stringify(saveData)
+      );
+    } catch (err) {
+      // 容量超過などでPNG保存や編集処理を止めない。
+      console.warn("localStorageへの自動保存をスキップしました", err);
+    }
   },
 
   loadLocal() {
@@ -247,6 +266,9 @@ renderTexts() {
         this.state,
         data
       );
+
+      // 旧版の巨大なlocalStorageデータを、起動時に軽量版へ置き換える。
+      this.saveLocal();
     } catch (err) {
       console.error(err);
     }
