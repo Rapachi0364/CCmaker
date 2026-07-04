@@ -33,6 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
       y: baseY + delta.y
     };
 
+    // 背景画像の端がカード内に入り込んで空白が出ないように制限する。
+    // 画像サイズ取得前は renderBackground 側の再計算後に制限される。
+    if (typeof App.clampBackgroundTransform === "function") {
+      App.clampBackgroundTransform();
+    }
+
     App.renderBackground();
   });
 

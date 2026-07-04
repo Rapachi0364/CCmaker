@@ -1,4 +1,4 @@
-const CACHE_NAME = "ccmaker-v23-storage-fixed";
+const CACHE_NAME = "ccmaker-v24-background-clamp";
 
 const APP_FILES = [
   "./",
