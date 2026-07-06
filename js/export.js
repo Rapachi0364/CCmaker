@@ -41,39 +41,82 @@ document.addEventListener("DOMContentLoaded", () => {
       holder.appendChild(clone);
       document.body.appendChild(holder);
 
-      const clonePhotoArea = clone.querySelector("#photoArea");
-      if (clonePhotoArea) {
-        clonePhotoArea.style.backgroundImage = "none";
+      // html2canvas は background-position: calc(...) を環境によって正しく反映しないため、
+      // 保存用クローンでは背景を <img> として再配置する。
+      // これにより、背景調整モードで動かした位置がPNGにそのまま反映される。
+      const cloneBackground = clone.querySelector("#background");
+      if (cloneBackground) {
+        cloneBackground.style.backgroundImage = "none";
+        cloneBackground.style.overflow = "hidden";
 
-        if (App.state.photo) {
-          const img = await loadImage(App.state.photo);
+        if (App.state.background) {
+          const bgImg = await loadImage(App.state.background);
+          const t = App.state.backgroundTransform || { x: 0, y: 0 };
 
-          const area = App.state.photoArea;
-          const p = App.state.photoTransform;
-
-          const ratio = Math.min(
-            area.width / img.naturalWidth,
-            area.height / img.naturalHeight
+          const cardW = 700;
+          const cardH = 1000;
+          const ratio = Math.max(
+            cardW / bgImg.naturalWidth,
+            cardH / bgImg.naturalHeight
           );
 
-          const w = img.naturalWidth * ratio * p.scale;
-          const h = img.naturalHeight * ratio * p.scale;
+          const w = bgImg.naturalWidth * ratio;
+          const h = bgImg.naturalHeight * ratio;
 
-          img.style.position = "absolute";
-          img.style.width = w + "px";
-          img.style.height = h + "px";
-          img.style.left = (area.width - w) / 2 + p.x + "px";
-          img.style.top = (area.height - h) / 2 + p.y + "px";
-          img.style.maxWidth = "none";
-          img.style.pointerEvents = "none";
+          bgImg.style.position = "absolute";
+          bgImg.style.width = w + "px";
+          bgImg.style.height = h + "px";
+          bgImg.style.left = (cardW - w) / 2 + Number(t.x || 0) + "px";
+          bgImg.style.top = (cardH - h) / 2 + Number(t.y || 0) + "px";
+          bgImg.style.maxWidth = "none";
+          bgImg.style.pointerEvents = "none";
 
-          clonePhotoArea.appendChild(img);
+          cloneBackground.appendChild(bgImg);
         }
       }
 
+      // V29: 写真はCSS backgroundのままでは、縦長画像＋calc(background-position)で
+      // 一部ブラウザのhtml2canvasが失敗することがある。
+      // 保存用クローンでは、プレビューと同じ計算式で <img> として再配置する。
+      // プレビュー仕様: background-size: `${100 * scale}% auto`
+      // つまり「写真エリア幅に合わせる」ため、縦長画像でも上下位置が一致する。
+      const clonePhotoArea = clone.querySelector("#photoArea");
+      if (clonePhotoArea) {
+        clonePhotoArea.style.backgroundImage = "none";
+        clonePhotoArea.style.overflow = "hidden";
+
+        if (App.state.photo) {
+          const photoImg = await loadImage(App.state.photo);
+          const area = App.state.photoArea || { left: 0, top: 0, width: 700, height: 1000 };
+          const p = App.state.photoTransform || { x: 0, y: 0, scale: 1 };
+
+          const areaW = Number(area.width || 700);
+          const areaH = Number(area.height || 1000);
+          const scale = Number(p.scale || 1);
+
+          const baseRatio = areaW / photoImg.naturalWidth;
+          const w = photoImg.naturalWidth * baseRatio * scale;
+          const h = photoImg.naturalHeight * baseRatio * scale;
+
+          photoImg.style.position = "absolute";
+          photoImg.style.width = w + "px";
+          photoImg.style.height = h + "px";
+          photoImg.style.left = ((areaW - w) / 2 + Number(p.x || 0)) + "px";
+          photoImg.style.top = ((areaH - h) / 2 + Number(p.y || 0)) + "px";
+          photoImg.style.maxWidth = "none";
+          photoImg.style.maxHeight = "none";
+          photoImg.style.pointerEvents = "none";
+
+          clonePhotoArea.appendChild(photoImg);
+        }
+      }
+
+      // 描画直前に1フレーム待って、スマホSafari/Chromeのレイアウト確定とメモリ解放を促す。
+      await waitForNextFrame();
+
       const canvas = await html2canvas(clone, {
         backgroundColor: null,
-        scale: 2,
+        scale: isMobileDevice() ? 1.5 : 2,
         useCORS: true,
         allowTaint: true,
         logging: false,
@@ -129,6 +172,10 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("画像の事前読み込みに失敗しました", err);
       }))
     );
+  }
+
+  function waitForNextFrame() {
+    return new Promise(resolve => requestAnimationFrame(() => resolve()));
   }
 
   function canvasToBlob(canvas) {
